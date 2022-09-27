@@ -1,5 +1,4 @@
-# CSYE  INFO6225: Assignment-01
-
+# README file of Assignment_01 for INFO6225
 This is a README file of Assignment_01 for the course INFO6225.
 
 ## Installation
@@ -38,5 +37,3 @@ Rajat Rao
 rao.rajat@northeaster.edu
 
 002987057
-
-*******************************
