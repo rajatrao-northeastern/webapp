@@ -1,4 +1,4 @@
-# README file of Assignment_01 for INFO6225
+# CSYE  INFO6225: Assignment-01
 This is a README file of Assignment_01 for the course INFO6225.
 
 ## Installation
@@ -28,12 +28,12 @@ FrameWork: ExpressJs
 
 
 ## License
-[MIT] (https://choosealicense.com/licenses/mit/)
+ MIT
 
 ## Developed By
 
 Rajat Rao
 
-rao.rajat@northeaster.edu
+rao.rajat@northeastern.edu
 
 002987057
