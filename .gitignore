@@ -1,0 +1,11 @@
+# Dependency Directories
+node_modules
+jspm_packages
+
+#VS code extensions
+.vscode-test
+
+#logs
+logs
+*.log
+npm-debug.log*
