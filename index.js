@@ -1,5 +1,21 @@
-const express = require('express')
-var bodyParser = require('body-parser')
+const express = require('express');
+var bodyParser = require('body-parser');
+
+const mysql = require('mysql');
+
+var mysqlConnection = mysql.createConnection({
+    host: 'localhost',
+    user: 'admin',
+    password: 'Rajatrao@0594',
+    database: 'admindb'
+});
+
+mysqlConnection.connect((err)=> {
+    if(!err)
+    console.log('DB Connection Established!!');
+    else
+    console.log('DB Connection failed \n Error' + JSON.stringify(err, undefined, 2));
+});
 
 const app = express()
 app.use(bodyParser.urlencoded({extended: false}))
@@ -7,12 +23,6 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 const port= 9000;
-
-const cloths = [
-    { type: "Polo", brand: "Armani Exchange"},
-    { type: "Shirts", brand: "GAS"},
-    { type: "Jeans", brand: "G-Start Raw"}
-]
 
 app.get("/", (req,res) => {
     res.json(cloths)
