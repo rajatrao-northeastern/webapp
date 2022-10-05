@@ -1,5 +1,5 @@
-# CSYE  INFO6225: Assignment-01
-This is a README file of Assignment_01 for the course INFO6225.
+# CSYE6225: Assignment-02
+This is a README file of Assignment_02 for the course INFO6225.
 
 ## Installation
 
@@ -20,13 +20,17 @@ npm install
 
 4. Install Browser/Postman to view running application.
 
+5. Verify API Endpoints
+
 ## Technologies
- 
-Runtime Environment :NodeJs, 
+
+Language: JavaScript,
+
+Runtime Environment: NodeJs, 
  
 FrameWork: ExpressJs
 
-
+Database: MySql
 ## License
  MIT
 
