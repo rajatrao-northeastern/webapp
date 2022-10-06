@@ -19,6 +19,9 @@ npm install
 ```
 
 4. Install Browser/Postman to view running application.
+```bash
+npm start
+```
 
 5. Verify API Endpoints
 
