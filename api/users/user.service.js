@@ -35,7 +35,7 @@ module.exports ={
     },
     getUserByUserID: (id, callback) => {
         pool.query(
-            `select id, LastName, FirstName, Email, Password from Persons where id = ?`,
+            `select id, LastName, FirstName, Email, account_created, account_updated from Persons where id = ?`,
             [id],
             (err, results, fields) => {
                 if(err) {
@@ -47,11 +47,12 @@ module.exports ={
     },
     updateUser: (data, callback) => {
         pool.query(
-            `update Persons set LastName=?, FirstName=?, Password=?, account_updated=NOW() where id = ?`,
+                `update Persons set LastName = ?, FirstName = ?, Email = ?, Password = ? WHERE id = ?`,
             [
                 data.LastName,
                 data.FirstName,
-                data.Password,
+                data.Email,
+                data.Password
             ],
             (err, results, fields) => {
                 if(err) {

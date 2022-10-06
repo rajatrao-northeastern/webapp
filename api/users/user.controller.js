@@ -60,10 +60,16 @@ module.exports = {
             const body = req.body;
             const salt = genSaltSync(10);
             body.Password = hashSync(body.Password, salt);
-            updateUser(body, (err, results) => {
+            updateUser(body,(err,results) => {
                 if (err) {
                     console.log(err);
                     return;
+                }
+                if(!results){
+                    return res.json({
+                        success: 0,
+                        message: "Failed to Update"
+                    })
                 }
                 return res.json({
                     success: 1,
