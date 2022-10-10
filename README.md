@@ -23,11 +23,6 @@ npm install
 npm start
 ```
 
-5. Verify API Endpoints
-
-1. /api
-2. /api/user/
-
 ## Technologies
 
 Language: JavaScript,
@@ -37,13 +32,3 @@ Runtime Environment: NodeJs,
 FrameWork: ExpressJs
 
 Database: MySql
-## License
- MIT
-
-## Developed By
-
-Rajat Rao
-
-rao.rajat@northeastern.edu
-
-002987057
