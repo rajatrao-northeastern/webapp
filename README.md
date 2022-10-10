@@ -1,5 +1,7 @@
 # CSYE6225: Assignment-02
+
 This is a README file of Assignment_02 for the course INFO6225.   rajatrao000
+
 
 ## Installation
 
@@ -23,12 +25,6 @@ npm install
 npm start
 ```
 
-5. Verify API Endpoints
-
-1. /api
-2. /api/user
-3. /api/user/kjkj
-
 ## Technologies
 
 Language: JavaScript,
@@ -38,13 +34,8 @@ Runtime Environment: NodeJs,
 FrameWork: ExpressJs
 
 Database: MySql
-## License
- MIT
+## DEVELOPER
 
-## Developed By
-
-Rajat Rao
-
-rao.rajat@northeastern.edu
+rao.rajat@norheastern.edu
 
 002987057
