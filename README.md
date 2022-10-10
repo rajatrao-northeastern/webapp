@@ -1,5 +1,7 @@
 # CSYE6225: Assignment-02
-This is a README file of Assignment_02 for the course INFO6225.     rajatrao 002987057kkk
+
+This is a README file of Assignment_02 for the course INFO6225.   rajatrao000
+
 
 ## Installation
 
