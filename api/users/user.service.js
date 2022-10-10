@@ -10,15 +10,13 @@ module.exports ={
                 data.FirstName,
                 data.Email,
                 data.Password
-
             ],
             (err, results, fields) => {
                 if(err) {
                  return callBack(err)
                 }
                 return callBack(null, results);
-            }
-            );
+            });
             console.log(data);
     },
     getUser: callback => {
@@ -47,8 +45,9 @@ module.exports ={
     },
     updateUser: (data, callback) => {
         pool.query(
-                `update Persons set LastName = ?, FirstName = ?, Email = ?, Password = ?, account_updated=NOW() WHERE id = 2`,
-            [
+                `update Persons set id = ?, LastName = ?, FirstName = ?, Email = ?,  Password = ?, account_updated=NOW() WHERE id = 2`,
+            [   
+                data.id,
                 data.LastName,
                 data.FirstName,
                 data.Email,
@@ -62,9 +61,9 @@ module.exports ={
             }         
         )
     },
-    deleteUser: (data, callback) => {
+    deleteUser:(data, callback) => {
         pool.query(
-            `delete from Persons where id = ?`,
+            `delete from Persons where id = ?` ,
             [data.id],
             (err, results, fields) => {
                 if(err) {
