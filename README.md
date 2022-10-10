@@ -26,8 +26,7 @@ npm start
 5. Verify API Endpoints
 
 1. /api
-2. /api/user
-3. /api/user/kjkj
+2. /api/user/
 
 ## Technologies
 
