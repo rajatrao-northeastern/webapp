@@ -20,7 +20,7 @@ module.exports = {
                     success:1,
                     data:results    
                 });
-            })
+            });
         },
 
         getUser: (req, res) => {
@@ -33,6 +33,7 @@ module.exports = {
                     success:1,
                     data:results
                 });
+
             });
         },
 
@@ -92,10 +93,9 @@ module.exports = {
                     });
                 }
                 return res.json({
-                    success: 1,
-                    message:"User deleted Successfully"
+                    Success: 1,
+                    Message:"User deleted Successfully"
                 });
             });
         }
-
-    };
+ };
