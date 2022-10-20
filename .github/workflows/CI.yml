@@ -27,7 +27,7 @@ jobs:
               with:
                 mysql version: ${{ matrix.mysql-version }}
                 mysql database: 'admindb'
-                mysql admin password: 'Rajatrao@0594'
+                mysql root password: 'Rajatrao@0594'
             - name: Initialize Packer
               run: packer init .
             - run: npm ci
