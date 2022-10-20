@@ -1,8 +1,6 @@
-# CSYE6225: Assignment-02
+# CSYE6225: Assignment-04
 
-This is a README file of Assignment_02 for the course INFO6225.
-
-## Installation
+This is a README file of Assignment_04 for the course INFO6225.
 
 1. Clone the repository.
 ```bash
@@ -23,7 +21,14 @@ npm install
 ```bash
 npm start
 ```
-
+5. Run Packer command 
+```bash
+    packer build <file name .pkr.hcl>
+```
+6. Run AWS Cloud Formation Command by Passing the parameter
+```bash
+aws cloudformation create-stack --stack-name teststack14 --template-body file://csye6225-infra.yaml --parameters ParameterKey=VpcCidrBlock,ParameterValue=10.0.0.0/16 ParameterKey=SubnetCidrBlock1,ParameterValue=10.0.1.0/24 ParameterKey=SubnetCidrBlock2,ParameterValue=10.0.2.0/24 ParameterKey=SubnetCidrBlock3,ParameterValue=10.0.3.0/24 ParameterKey=ImageId,ParameterValue=' AMI-ID’
+```
 ## Technologies
 
 Language: JavaScript,
