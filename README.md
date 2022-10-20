@@ -1,6 +1,6 @@
-# CSYE6225: Assignment-02
+# CSYE6225: Assignment-04
 
-This is a README file of Assignment_02 for the course INFO6225.
+This is a README file of Assignment_04 for the course INFO6225.
 ## Installation
 
 1. Clone the repository.
@@ -22,7 +22,10 @@ npm install
 ```bash
 npm start
 ```
-
+5. Run Packer command 
+```bash
+    packer build <file name .pkr.hcl>
+```
 ## Technologies
 
 Language: JavaScript,
