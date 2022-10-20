@@ -1,8 +1,6 @@
 name: Validate
 on:
-  pull_request:
-    types:
-      - opened
+  push:
   workflow_dispatch:
 jobs:
     validate-packer:
