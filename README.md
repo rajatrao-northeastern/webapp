@@ -1,7 +1,6 @@
 # CSYE6225: Assignment-04
 
 This is a README file of Assignment_04 for the course INFO6225.
-## Installation
 
 1. Clone the repository.
 ```bash
