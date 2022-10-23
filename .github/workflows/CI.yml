@@ -1,7 +1,8 @@
 name: CI
 on:
   push:
-  
+    branches: [main_01]
+    
 jobs:
     build-node:
         runs-on: ubuntu-latest
@@ -24,9 +25,14 @@ jobs:
             - uses: mirromutth/mysql-action@v1.1
               with:
                 mysql version: ${{ matrix.mysql-version }}
-                mysql database: 'admindb'
+                mysql database: 'usersDB'
                 mysql root password: 'Rajatrao@0594'
             - run: npm ci
             - run: npm run build --if-present
             - run: npm start
-            - run: packer build .
+            - name: Validate Template
+              uses: hashicorp/packer-github-actions@master
+              with:
+                command: validate
+                arguments: -syntax-only
+                target: ./ami-packer/ami.pkr.hcl
