@@ -25,7 +25,7 @@ var corsOptions = {
       console.log("Failed to sync db: " + err.message);
     });
 
-    
+
 //Authentication
 // app.use (( req, res ,next ) => {
 //     if ( !req.get ( 'Authorization' ) ) {

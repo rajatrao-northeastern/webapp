@@ -1,8 +1,8 @@
 module.exports ={
     HOST: 'localhost',
-    USER: 'admin',
+    USER: 'root',
     PASSWORD: 'Rajatrao@0594',
-    DATABASE: 'admindb',
+    DATABASE: 'usersDB',
     Dialect: 'mysql',
     pool: {
         max: 5,
