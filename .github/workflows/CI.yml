@@ -1,6 +1,7 @@
 name: CI
 on:
   push:
+    branches: [main]
   
 jobs:
     build-node:
@@ -17,6 +18,7 @@ jobs:
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                 aws-region: us-east-1
+                ssh_username: "ubuntu"
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v3
               with:
@@ -24,9 +26,14 @@ jobs:
             - uses: mirromutth/mysql-action@v1.1
               with:
                 mysql version: ${{ matrix.mysql-version }}
-                mysql database: 'admindb'
+                mysql database: 'usersDB'
                 mysql root password: 'Rajatrao@0594'
-            - run: npm ci
+            - run: npm i
             - run: npm run build --if-present
-            - run: npm start
-            - run: packer build .
+            - run: npm test
+            - name: Validate Template
+              uses: hashicorp/packer-github-actions@master
+              with:
+                command: validate
+                arguments: -syntax-only
+                target: ./ami_packer/ami.pkr.hcl
