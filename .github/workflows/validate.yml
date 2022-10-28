@@ -24,6 +24,9 @@ jobs:
     #     arguments: "-color=false -on-error=abort"
     #     target: packer/new-aws-ubuntu.pkr.hcl
     #     working_directory: ${{ github.workspace }}
+      env: # Grab the AWS environment variables for deployment
+        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Use latest Packer
       uses: hashicorp-contrib/setup-packer@v2
@@ -34,6 +37,4 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: zip webappDEV.zip ./* && ls -a && packer init ami.pkr.hcl && packer build ami.pkr.hcl
 
-      env: # Grab the AWS environment variables for deployment
-        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
