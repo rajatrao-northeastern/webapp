@@ -1,65 +1,31 @@
-require('dotenv').config();
-var express = require('express');
-const cors = require("cors");
-var bodyParser = require('body-parser');
+const express = require('express');
+const router = require('./routes/router.js');
+const bodyParser = require('body-parser');
+const db = require("./config/sequelizeDB.js");
+const baseAuthentication = require('./util/auth.js');
 
-var app = express()
+const app = express();
+app.use(express.json());
+app.use(bodyParser.urlencoded({extended: false}))
+app.use("/",router);
 
-const db = require('./models');
-
-app.use(bodyParser.urlencoded({extended: true}))
-
-var corsOptions = {
-    origin: "http://localhost:3000"
-  };
-  
-  app.use(cors(corsOptions));
-
-  app.use(bodyParser.json());
-
-  db.sequelize.sync()
-    .then(() => {
-      console.log("Synced db.");
-    })
-    .catch((err) => {
-      console.log("Failed to sync db: " + err.message);
-    });
-
-
-//Authentication
-// app.use (( req, res ,next ) => {
-//     if ( !req.get ( 'Authorization' ) ) {
-//         var err = new Error('Not Authenticated')
-//         res.status(401).set('WWW-Authenticate', 'Basic')
-//         next(err)
-//    }
-//     else { 
-//         var credentials = Buffer.from(req.get('Authorization').split(' ')[1],'base64')
-//         .toString()
-//         .split(':')
-//         var username = credentials [ 0 ]
-//         var password = credentials [ 1 ]
-//         if ( !( username ===  process.env.UNAME && password === process.env.PASS) ) {
-//             var err = new Error ('Not Authenticated!')
-//             res.status(401).set ('WWW-Authenticate','Basic')
-//             next(err)
-//         }
-//         res.status(200)
-//         next()
-//     }
-// });
-
-app.get("/", (req, res) => {
-    res.json({ message: "Route is Authenticated" });
-  });
-
-  require("./api/users/user.router")(app);
-
-app.get("/", (req,res) => {
-    res.send('Protected route with Basic HTTP Authentication')
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, x-access-token"
+    );
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+    res.header("Access-Control-Request-Headers", "x-access-token");
+    next();
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+db.sequelize.sync();
+
+const port = process.env.PORT || 3000;
+
+module.exports = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
