@@ -87,7 +87,7 @@ const deleteFile = async ( s3, doc) => {
     let deleted = true;
     const params = {
 
-        Bucket: process.env.AWS_BUCKET_NAME || 'csye6225-b1',
+        Bucket: process.env.AWS_BUCKET_NAME,
         Key:   doc.user_id+'/'+doc.file_name
 
     }

@@ -32,10 +32,10 @@ router.post("/v1/document", baseAuthentication(), upload.single('file'), docCont
 
 // Get Picture
 
-router.get("/v1/document", baseAuthentication(), docController.getUserDoc);
+router.get("/v1/document/:id", baseAuthentication(), docController.getUserDoc);
 
 // Delete Picture
 
-router.delete("/v1/document", baseAuthentication(), docController.deleteUserDoc);
+router.delete("/v1/document/:id", baseAuthentication(), docController.deleteUserDoc);
 
 module.exports = router;

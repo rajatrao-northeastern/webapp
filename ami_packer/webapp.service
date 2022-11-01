@@ -10,7 +10,7 @@ Restart=always
 RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=Webapp
+SyslogIdentifier=WebApp
 User=${var.ssh_username}
 
 
