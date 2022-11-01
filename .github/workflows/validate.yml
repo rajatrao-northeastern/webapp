@@ -35,6 +35,5 @@ jobs:
 
     - name: Build image from template
       working-directory: ${{ github.workspace }}
-      run: zip webappDEV.zip ./* && ls -a && packer init ami.pkr.hcl && packer build ami.pkr.hcl
-
+      run: zip webappDEV.zip ./* && ls -a && cd ami_packer && packer init ami.pkr.hcl && packer build ami.pkr.hcl
 
