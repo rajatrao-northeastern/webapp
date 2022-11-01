@@ -1,4 +1,3 @@
-
 variable "aws_region" {
   type    = string
   default = "us-east-1"
@@ -20,8 +19,7 @@ source "amazon-ebs" "my-ami" {
     ami_description = "AMI for CSYE 6225"
     ami_regions = [
         "us-east-1",
-    ]
-    
+    ] 
     instance_type = "t2.micro"
     ami_users = [ "838931846632" ]
     source_ami = "${var.source_ami}"
@@ -39,19 +37,16 @@ build {
     sources = [ 
         "source.amazon-ebs.my-ami"
     ]
-
+    
     provisioner "file" {
         source = "./webappDEV.zip"
         destination = "/home/${var.ssh_username}/webappDEV.zip"
     }
-
     provisioner "file" {
         source = "./webapp.service"
         destination = "/tmp/webapp.service"
     }
-
     provisioner "shell" {
         script = "./setup.sh"
     }
-
 }
