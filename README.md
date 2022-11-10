@@ -38,3 +38,8 @@ Runtime Environment: NodeJs,
 FrameWork: ExpressJs
 
 Database: MySql
+
+
+## Developed by
+
+Rajat Rao-002987057
