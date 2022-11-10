@@ -37,7 +37,7 @@ build {
     sources = [ 
         "source.amazon-ebs.my-ami"
     ]
-    
+
     provisioner "file" {
         source = "./webappDEV.zip"
         destination = "/home/${var.ssh_username}/webappDEV.zip"

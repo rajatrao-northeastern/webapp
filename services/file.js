@@ -3,9 +3,11 @@ const {
 } = require('uuid');
 const fs = require('fs');
 const _ = require('underscore');
+const logger = require("../config/logger");
+const SDC = require('statsd-client');
+const dbConfig = require('../config/configDB.js');
 const db = require('../config/sequelizeDB.js');
-// const logger = require('../config/logger');
-const dbConfig = require("../config/configDB.js");
+const sdc = new SDC({host: dbConfig.METRICS_HOSTNAME, port: dbConfig.METRICS_PORT});
 const File = db.file;
 const User = db.users;
 const Doc = db.docs;
@@ -30,7 +32,7 @@ const fileUpload = async (source, targetName, s3, fileId, req, res) => {
 
             var params = {
                 Bucket: process.env.AWS_BUCKET_NAME || 'csye6225-b1',
-                Key: user.id+'/'+targetName,
+                Key: user.id+'/'+targetName,  
                 Body: filedata
             };
 
@@ -45,7 +47,6 @@ const fileUpload = async (source, targetName, s3, fileId, req, res) => {
                 } else {
 
                     const aws_metadata = JSON.parse(JSON.stringify(data));
-                    // console.log(aws_metadata)
                     
                     var doc = {
                         id: uuidv4(),
@@ -55,6 +56,8 @@ const fileUpload = async (source, targetName, s3, fileId, req, res) => {
                     };
             
                     Doc.create(doc).then(data => {
+                        logger.info("update user document 204");
+                        sdc.increment('endpoint.docupload');
                             res.status(201).send({
                                 file_name: data.file_name,
                                 id: data.id,
@@ -83,7 +86,7 @@ const fileUpload = async (source, targetName, s3, fileId, req, res) => {
 const deleteFile = async ( s3, doc) => {
 
     let s3_start = Date.now();
-    console.log('deleteFile')
+   // console.log('deleteFile')
     let deleted = true;
     const params = {
 
@@ -101,7 +104,8 @@ const deleteFile = async ( s3, doc) => {
             logger.error(err)
 
         } else {
-            console.log('deleteFile success')
+            logger.info("deleteFile success")
+            sdc.increment('endpoint.deletedoc');
           
             await Doc.destroy(
                 {
