@@ -9,7 +9,12 @@ const multer = require('multer');
 const path = require('path');
 const fileService = require('../services/file');
 const AWS = require('aws-sdk');
-const fs = require('fs')
+const fs = require('fs');
+const logger = require("../config/logger");
+const SDC = require('statsd-client');
+const dbConfig = require('../config/configDB.js');
+const sdc = new SDC({host: dbConfig.METRICS_HOSTNAME, port: dbConfig.METRICS_PORT});
+
 
 //Creating a new instance of S3:
 AWS.config.update({
@@ -22,36 +27,36 @@ const s3 = new AWS.S3();
 
 async function updateUserDoc(req, res, next) {
     const user = await getUserByUsername(req.user.username);
-    var doc = await Doc.findOne({
-        where: {
-            user_id: user.id
-        }
-    });
+    // var doc = await Doc.findOne({
+    //     where: {
+    //         user_id: user.id
+    //     }
+    // });
 
-    if (doc) {
-        var del = await fileService.deleteFile(s3, doc);
-        if (del) {
+    // if (doc) {
+    //     var del = await fileService.deleteFile(s3, doc);
+    //     if (del) {
 
-        } else {
-            res.status(404).send({
-                message: 'error deleting'
-            });
-        }
-    }
+    //     } else {
+    //         res.status(404).send({
+    //             message: 'error deleting'
+    //         });
+    //     }
+    // }
 
     if (!req.file) {
         res.status(400).send({
             message: 'No File Uploaded!'
         });
         console.log("No File Uploaded..!");
-    }
+     }
 
     const filetypes = /jpeg|jpg|png|pdf/;
     const extname = filetypes.test(path.extname(req.file.originalname).toLowerCase());
     const mimetype = filetypes.test(req.file.mimetype);
 
     if (!mimetype && !extname) {
-
+        logger.error("Doc File Not Supported");
         res.status(400).send({
             message: 'Unsupported File Type'
         });
@@ -88,6 +93,32 @@ async function getUserDoc(req, res, next) {
             user_id: doc.user_id
         });
     } else {
+        logger.error("No Doc found !");
+        res.status(404).send({
+            message: 'No Doc found!'
+        });
+    }
+}
+
+async function getUserDocAll(req, res, next) {
+    // let id = req.params.id
+    const user = await getUserByUsername(req.user.username);
+    console.log(user)
+    var doc = await Doc.findAll({
+        where: {
+            user_id: user.id
+        }
+    });
+    doc.forEach(d => {
+        for (let key in d) {
+          console.log(`${key}: ${d[key]}`)
+        }
+      });
+
+    if (doc) {
+        res.status(200).json(doc);
+
+    } else {
         res.status(404).send({
             message: 'No Doc found!'
         });
@@ -97,6 +128,7 @@ async function getUserDoc(req, res, next) {
 // Delete doc
 
 async function deleteUserDoc(req, res, next) {
+    let id = req.params.id
     const user = await getUserByUsername(req.user.username);
 
     var doc = await Doc.findOne({
@@ -140,6 +172,7 @@ module.exports = {
 
     updateUserDoc: updateUserDoc,
     getUserDoc: getUserDoc,
+    getUserDocAll: getUserDocAll,
     deleteUserDoc: deleteUserDoc,
 
 };
