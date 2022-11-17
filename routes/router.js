@@ -50,4 +50,8 @@ router.get("/v1/documents", baseAuthentication(), docController.getUserDocAll);
 
 router.delete("/v1/document/:id", baseAuthentication(), docController.deleteUserDoc);
 
+// Verify User
+
+router.get("/v1/verify", userController.verifyUser);
+
 module.exports = router;
