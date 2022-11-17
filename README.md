@@ -1,4 +1,4 @@
-# CSYE6225: Assignment-05
+# CSYE6225: Assignment-08
 
 This is a README file of Assignment_04 for the course INFO6225.
 
@@ -38,3 +38,8 @@ Runtime Environment: NodeJs,
 FrameWork: ExpressJs
 
 Database: MySql
+
+
+## Developed by
+
+Rajat Rao-002987057
