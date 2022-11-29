@@ -48,10 +48,11 @@ router.get("/v1/documents", baseAuthentication(), docController.getUserDocAll);
 
 // Delete Doc
 
-router.delete("/v1/document/:id", baseAuthentication(), docController.deleteUserDoc);
+router.delete("/v1/documents/:id", baseAuthentication(), docController.deleteUserDoc);
+
 
 // Verify User
-
 router.get("/v1/verify", userController.verifyUser);
+
 
 module.exports = router;

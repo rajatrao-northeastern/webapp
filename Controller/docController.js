@@ -26,6 +26,7 @@ const s3 = new AWS.S3();
 // Update doc
 
 async function updateUserDoc(req, res, next) {
+    logger.info("inside updateUserDoc function");
     const user = await getUserByUsername(req.user.username);
     // var doc = await Doc.findOne({
     //     where: {
@@ -76,11 +77,14 @@ async function updateUserDoc(req, res, next) {
 // Get doc
 
 async function getUserDoc(req, res, next) {
+    let id = req.params.id
+    logger.info("inside getUserDoc function");
     const user = await getUserByUsername(req.user.username);
+    logger.info("after getUserByUsername function");
     console.log(user)
     var doc = await Doc.findOne({
         where: {
-            user_id: user.id
+            user_id: user.id, id: id
         }
     });
 
@@ -94,7 +98,7 @@ async function getUserDoc(req, res, next) {
         });
     } else {
         logger.error("No Doc found !");
-        res.status(404).send({
+        res.status(400).send({
             message: 'No Doc found!'
         });
     }
@@ -129,11 +133,13 @@ async function getUserDocAll(req, res, next) {
 
 async function deleteUserDoc(req, res, next) {
     let id = req.params.id
+    logger.info("inside deleteUserDoc function");
     const user = await getUserByUsername(req.user.username);
+    logger.info("after getUserByUsername function");
 
     var doc = await Doc.findOne({
         where: {
-            user_id: user.id
+            user_id: user.id, id: id
         }
     });
 
@@ -141,6 +147,7 @@ async function deleteUserDoc(req, res, next) {
         console.log('delete doc', doc);
         var del = await fileService.deleteFile(s3, doc);
         if (del) {
+            logger.info("/delete user doc");
             res.status(200).send('')
         } else {
             res.status(404).send({
@@ -157,6 +164,7 @@ async function deleteUserDoc(req, res, next) {
 
 async function getUserByUsername(username) {
     console.log('getUserByUsername')
+    logger.info("inside getUserByUsername function");
     return User.findOne({
         where: {
             username: username

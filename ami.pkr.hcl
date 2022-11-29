@@ -38,14 +38,19 @@ build {
         "source.amazon-ebs.my-ami"
     ]
 
+    # provisioner "file" {
+    #     source = "./webappDEV.zip"
+    #     destination = "/home/${var.ssh_username}/webappDEV.zip"
+    # }
     provisioner "file" {
         source = "./webappDEV.zip"
         destination = "/home/${var.ssh_username}/webappDEV.zip"
     }
-    provisioner "file" {
-        source = "./webapp.service"
-        destination = "/tmp/webapp.service"
-    }
+    
+    # provisioner "file" {
+    #     source = "./webapp.service"
+    #     destination = "/tmp/webapp.service"
+    # }
     provisioner "shell" {
         script = "./setup.sh"
     }
