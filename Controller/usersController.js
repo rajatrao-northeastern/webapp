@@ -8,6 +8,7 @@ const SDC = require('statsd-client');
 const dbConfig = require('../config/configDB.js');
 const sdc = new SDC({host: dbConfig.METRICS_HOSTNAME, port: dbConfig.METRICS_PORT});
 
+
 const AWS = require('aws-sdk');
 AWS.config.update({
     region: process.env.AWS_REGION || 'us-east-1'
@@ -18,10 +19,10 @@ var dynamoDatabase = new AWS.DynamoDB({
     region: process.env.AWS_REGION || 'us-east-1'
 });
 
-
 // Create a User
 
 async function createUser (req, res, next) {
+    logger.info("inside createUSer function");
    const salt = bcrypt.genSaltSync(10);
     var hash = await bcrypt.hash(req.body.password, salt);
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -31,18 +32,22 @@ async function createUser (req, res, next) {
             message: 'Enter your Email ID in correct format. Example: abc@xyz.com'
         });
     }
+    logger.info("before findOne function");
     const getUser = await User .findOne({where: {username: req.body.username}}).catch(err => {
         logger.error("/create user error 500");
-        res.status(400).send({
+        res.status(500).send({
             message: err.message || 'Some error occurred while creating the user'
         });
     });
 
-    if (getUser) {
+
+    if(getUser) {
+
         console.log('verified and existing', getUser.dataValues.isVerified);
         var msg = getUser.dataValues.isVerified ? 'User already exists! & verified' : 'User already exists! & not verified';
         console.log('verified and existing msg' ,msg);
-        
+
+        logger.error("User already exists!");
         res.status(400).send({
             message: msg
         });
@@ -55,84 +60,86 @@ async function createUser (req, res, next) {
             username: req.body.username,
             isVerified: false
         };
-        console.log('above user');
-        User.create(user).then(async udata => {
+    logger.info("before User.create");
+    User.create(user).then(async udata => {
+        logger.info("inside create user 201");
+        sdc.increment('endpoint.createuser');
 
-                const randomnanoID = uuidv4();
-
-                const expiryTime = new Date().getTime();
-
-                // Create the Service interface for dynamoDB
-                var parameter = {
-                    TableName: 'csye6225',
-                    Item: {
-                        'Email': {
-                           S: udata.username
-                        },
-                        'TokenName': {
-                            S: randomnanoID
-                        },
-                        'TimeToLive': {
-                            N: expiryTime.toString()
-                        }
-                    }
-                };
-                console.log('after user');
-                //saving the token onto the dynamo DB
-                try {
-                    var dydb = await dynamoDatabase.putItem(parameter).promise();
-                    console.log('try dynamoDatabase', dydb);
-                } catch (err) {
-                    console.log('err dynamoDatabase', err);
+        const randomnanoID = uuidv4();
+        const expiryTime = new Date().getTime();
+        var parameter = {
+            TableName: 'csye6225',
+            Item: {
+                'Email': {
+                    S: udata.username
+                },
+                'TokenName': {
+                    S: randomnanoID
+                },
+                'TimeToLive': {
+                    N: expiryTime.toString()
                 }
+            }
+        };
+        logger.info("parameter variable created");
 
-                console.log('dynamoDatabase', dydb);
+        try {
+            var dydb = await dynamoDatabase.putItem(parameter).promise();
+            console.log('try dynamoDatabase', dydb);
+        } catch (err) {
+            console.log('err dynamoDatabase', err);
+        }
+
+        console.log('dynamoDatabase', dydb);
                 var msg = {
                     'username': udata.username,
                     'token': randomnanoID
                 };
                 console.log(JSON.stringify(msg));
 
-                const params = {
+        const params = {
 
-                    Message: JSON.stringify(msg),
-                    Subject: randomnanoID,
-                    TopicArn: 'arn:aws:sns:us-east-1:838931846632:verify_email'
+            Message: JSON.stringify(msg),
+            Subject: randomnanoID,
+            TopicArn: 'arn:aws:sns:us-east-1:838931846632:verify_email'
+        }
 
-                }
-                var publishTextPromise = await sns.publish(params).promise();
+        var publishTextPromise = await sns.publish(params).promise();
 
-                console.log('publishTextPromise', publishTextPromise);
-                res.status(201).send({
-                    id: udata.id,
-                    first_name: udata.first_name,
-                    last_name: udata.last_name,
-                    username: udata.username,
-                    account_created: udata.createdAt,
-                    account_updated: udata.updatedAt,
-                    isVerified: udata.isVerified
-                });
+        console.error('publishTextPromise', publishTextPromise);
 
-            })
-            .catch(err => {
-                logger.error(" Error while creating the user! 500");
-                res.status(400).send({
-                    message: err.message || "Some error occurred while creating the user!"
-                });
-            });
+        res.status(201).send({
+            id: udata.id,
+            first_name: udata.first_name,
+            last_name: udata.last_name,
+            username: udata.username,
+            account_created: udata.createdAt,
+            account_updated: udata.updatedAt,
+            isVerified: udata.isVerified
+        });
+    })
+    .catch(err => {
+        logger.error(" Error while creating the user! 500");
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while creating the user!"
+        });
+    });
     }
 }
 
 // Verify user
 async function verifyUser(req, res, next) {
     console.log('verifyUser :');
+    logger.info("inside verifyUser function");
     console.log('verifyUser :', req.query.email);
     const user = await getUserByUsername(req.query.email);
+    logger.info("after getUserByUsername function");
     if (user) {
-        console.log('Got user  :');
+        console.log('got user  :');
         if (user.dataValues.isVerified) {
             res.status(202).send({
-                message: 'Already Verified Successfully!'
+                message: 'Already Successfully Verified!'
             });
         } else {
 
@@ -147,14 +154,14 @@ async function verifyUser(req, res, next) {
                     }
                 }
             };
-            console.log('Got user  param:');
+            console.log('got user  param:');
             // Call DynamoDB to read the item from the table
 
             dynamoDatabase.getItem(params, function (err, data) {
                 if (err) {
                     console.log("Error", err);
                     res.status(400).send({
-                        message: 'Unable to verify'
+                        message: 'unable to verify'
                     });
                 } else {
                     console.log("Success dynamoDatabase getItem", data.Item);
@@ -186,7 +193,7 @@ async function verifyUser(req, res, next) {
                                         });
                                     }
                                 }).catch(err => {
-                                    res.status(400).send({
+                                    res.status(500).send({
                                         message: 'Error Updating the user'
                                     });
                                 });
@@ -208,6 +215,7 @@ async function verifyUser(req, res, next) {
                     }
                 }
             });
+
         }
     } else {
         res.status(400).send({
@@ -219,7 +227,10 @@ async function verifyUser(req, res, next) {
 //Get a User
 
 async function getUser(req, res, next) {
-    const user = await getUserByUsername(req.user.username);
+    let id = req.params.id
+    logger.info("inside getUser function");
+    const user = await getUserByUsernameID(req.user.username, id);
+    logger.info("after getUserByUsernameID function");
     if (user) {
         logger.info("get user 200");
         res.status(200).send({
@@ -242,6 +253,7 @@ async function getUser(req, res, next) {
 
 async function updateUser(req, res, next) {
     let id = req.params.id
+    logger.info("inside updateUser function");
     if(req.body.username != req.user.username) {
         res.status(400);
     }
@@ -250,34 +262,38 @@ async function updateUser(req, res, next) {
             message: 'Enter all parameters!'
         });
     }
+    logger.info("before User.update");
     User.update({
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         password: await bcrypt.hash(req.body.password, 10)
-    }, {
-        where : {
-            username: req.user.username
-        }
-    }).then((result) => {
+    }, {where : {username: req.user.username, id: id}}).then((result) => {
         if (result == 1) {
             logger.info("update user 204");
             sdc.increment('endpoint.userUpdate');
             res.sendStatus(204);
         } else {
             res.sendStatus(400);
-        }
+        }   
     }).catch(err => {
         res.status(500).send({
-            message: 'Error Updating the user'
+            message:err.message || 'Error Updating the user'
         });
     });
 }
 
 async function getUserByUsername(username) {
+    logger.info("inside getUserByUsername function");
     return User.findOne({where : {username: username}});
 }
 
+async function getUserByUsernameID(username, id) {
+    logger.info("inside getUserByUsernameID function");
+    return User.findOne({where : {username: username, id: id}});
+}
+
 async function comparePasswords (existingPassword, currentPassword) {
+    logger.info("inside comparePasswords function");
     return bcrypt.compare(existingPassword, currentPassword);
 }
 
