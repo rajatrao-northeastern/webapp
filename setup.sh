@@ -14,8 +14,11 @@ sudo apt-get install -y gcc g++ make
 sudo npm i pm2 -g
 sleep 10
 echo "Installing AWS CLI"
-sudo apt install awscli
-aws --version
+sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+sleep 10
+sudo aws --version
 pwd
 echo "Before installing CW"
 #Install CLOUD WATCH AGENT
