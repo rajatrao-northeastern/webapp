@@ -32,3 +32,13 @@ jobs:
                 packer init ami.pkr.hcl
                 packer build ami.pkr.hcl
                 
+                aws ec2 create-launch-template-version \
+                --launch-template-id $TEMPLATE_ID \
+                --version-description webapp2\
+                --source-version 1 \
+                --launch-template-data "ImageId=ami-065557360af5257b3" \
+                --region us-east-1
+
+                aws autoscaling start-instance-refresh \
+                --auto-scaling-group-name $AutoscalingGroup
+                
