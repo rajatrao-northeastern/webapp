@@ -25,7 +25,8 @@ jobs:
                 zip -r ./webappDEV.zip ./*
                 echo "PWD: $(pwd)"
                 packer init ami.pkr.hcl
-                packer build ami.pkr.hcl                
+                packer build ami.pkr.hcl
+                
             - name: Get ID
               run: |
                   echo "AMI_ID=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d ":" -f2)" >> $GITHUB_ENV
@@ -38,8 +39,8 @@ jobs:
                 aws-region: us-east-1
             - name: Run this
               run: |
-                  aws ec2 create-launch-template-version --launch-template-name TemplateForEC2 --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID}}"}'
+                  aws ec2 create-launch-template-version --launch-template-name LaunchTemplate --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID}}"}'
             - name: run autoscaling
               run: |
-                aws autoscaling update-auto-scaling-group --auto-scaling-group-name teststack33-AutoscalingGroup-6XF2MS5RYABF --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version='$Latest'
-                aws autoscaling start-instance-refresh --auto-scaling-group-name teststack33-AutoscalingGroup-6XF2MS5RYABF
+                  aws autoscaling update-auto-scaling-group --auto-scaling-group-name teststack33-AutoscalingGroup-6XF2MS5RYABF --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version='$Latest'
+                  aws autoscaling start-instance-refresh --auto-scaling-group-name teststack33-AutoscalingGroup-6XF2MS5RYABF
