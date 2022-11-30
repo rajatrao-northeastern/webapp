@@ -13,12 +13,21 @@ sudo apt-get -y install npm
 sudo apt-get install -y gcc g++ make
 sudo npm i pm2 -g
 sleep 10
+echo "Installing AWS CLI"
+sudo apt install awscli
+aws --version
 pwd
 echo "Before installing CW"
 #Install CLOUD WATCH AGENT
 sudo curl -o /root/amazon-cloudwatch-agent.deb https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
 sudo dpkg -i -E /root/amazon-cloudwatch-agent.deb
-echo "Setup CW agent"
+echo "Creating Launch Template"
+aws ec2 create-launch-template-version \
+--launch-template-id $TEMPLATE_ID \
+--version-description webapp2\
+--source-version 1 \
+--launch-template-data "ImageId=ami-065557360af5257b3" \
+--region us-east-1
 sleep 10
 unzip webappDEV.zip -d webappDEV
 echo "installing npm"
