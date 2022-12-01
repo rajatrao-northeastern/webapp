@@ -1,6 +1,8 @@
 name: CI
 on:
   push:
+    branches: [main]
+  
 jobs:
     build-node:
         runs-on: ubuntu-latest
@@ -21,7 +23,11 @@ jobs:
               uses: actions/setup-node@v3
               with:
                 node-version: ${{ matrix.node-version }}
-            - name: Install npm 
+            - uses: mirromutth/mysql-action@v1.1
+              with:
+                mysql version: ${{ matrix.mysql-version }}
+                mysql database: 'usersDB'
+                mysql root password: 'Rajatrao@0594'
             - run: npm i
             - run: npm run build --if-present
             - run: npm test
