@@ -29,6 +29,10 @@ npm start
 ```bash
 aws cloudformation create-stack --stack-name teststack14 --template-body file://csye6225-infra.yaml --parameters ParameterKey=VpcCidrBlock,ParameterValue=10.0.0.0/16 ParameterKey=SubnetCidrBlock1,ParameterValue=10.0.1.0/24 ParameterKey=SubnetCidrBlock2,ParameterValue=10.0.2.0/24 ParameterKey=SubnetCidrBlock3,ParameterValue=10.0.3.0/24 ParameterKey=ImageId,ParameterValue=' AMI-ID’
 ```
+7. Run AWS Cloud Formation Command by Passing the parameter
+```bash
+aws cloudformation deploy --profile prodUser --template-file csye6225_infra_2.yaml  --parameter-overrides KeyName=prodKey ImageId=ami-0be5bf228a27b5c49 --stack-name teststack33 --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
+```
 ## Technologies
 
 Language: JavaScript,
