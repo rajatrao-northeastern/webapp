@@ -36,4 +36,4 @@ jobs:
               with:
                 command: validate
                 arguments: -syntax-only
-                target: ./ami_packer/ami.pkr.hcl
+                target: ./ami.pkr.hcl
