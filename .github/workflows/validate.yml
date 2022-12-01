@@ -1,6 +1,7 @@
 name: Validate
 on:
   push:
+    branches: [main]
 jobs:
     validate-packer:
         runs-on: ubuntu-latest
@@ -42,5 +43,5 @@ jobs:
                   aws ec2 create-launch-template-version --launch-template-name LaunchTemplate --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID}}"}'
             - name: run autoscaling
               run: |
-                  aws autoscaling update-auto-scaling-group --auto-scaling-group-name teststack33-AutoscalingGroup-6XF2MS5RYABF --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version='$Latest'
-                  aws autoscaling start-instance-refresh --auto-scaling-group-name teststack33-AutoscalingGroup-6XF2MS5RYABF
+                aws autoscaling update-auto-scaling-group --auto-scaling-group-name ${{ secrets.AWS_AUTO_GROUP_NAME }} --launch-template LaunchTemplateId=${{ secrets.AWS_LAUNCH_TEMPLATE_ID }},Version='$Latest'
+                aws autoscaling start-instance-refresh --auto-scaling-group-name ${{ secrets.AWS_AUTO_GROUP_NAME }}
