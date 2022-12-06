@@ -11,7 +11,7 @@ var start = new Date();
 
 // GET Method
 
-router.get("/healthz", (req, res) => {
+router.get("/health", (req, res) => {
     console.log("Connected to API")
     sdc.timing('health.timeout', start);
     logger.info("/healthz working as expected");
